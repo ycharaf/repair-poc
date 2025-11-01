@@ -1,0 +1,177 @@
+# Copilot Instructions — React Frontend (Vite + React Router + Tailwind + shadcn/ui)
+
+## ? Project Goal
+
+This project is a **proof of concept** demonstrating a **smooth, trustworthy device repair experience**, comparable to buying new. The core value is **rebuilding trust** between customers and repairers.
+
+The POC focuses on:
+
+* Simple onboarding and device selection
+* Clear repair **price & time estimation**
+* Comparison of **verified repairers** (rating, distance, guarantees)
+* Transparent **repair progress tracking** (timeline)
+
+We are optimizing for **speed**, **clarity**, and **demo impact**, *not* production-level complexity.
+
+---
+
+## ? Tech Stack
+
+* **React** (with Vite)
+* **React Router** (for navigation)
+* **TailwindCSS** (for fast UI development)
+* **shadcn/ui** (for pre-built accessible components)
+* **Supabase** (data + lightweight auth)
+
+No custom backend services. No complex auth flows.
+
+---
+
+## ? Project Structure (Guideline for Copilot)
+
+```
+src/
+  components/        # Shared UI components
+  features/
+    devices/         # Device selection screens & logic
+    estimation/      # Price & delay estimation UI
+    repairers/       # Repairer comparison & selection
+    tracking/        # Repair progress timeline UI
+  lib/
+    supabase.ts     # Supabase client
+  routes/            # Route-level pages
+  app.tsx            # Router + layout
+```
+
+**Copilot should:**
+
+* Place UI elements in `/components` when reusable
+* Place feature logic/hooks in the relevant `/features/...` folder
+* Keep pages simple ? data fetch + layout only
+
+---
+
+## ? Routing Rules
+
+We use **React Router** with the following routes:
+
+| Route                   | Purpose                       |
+| ----------------------- | ----------------------------- |
+| `/`                     | Home page (value proposition) |
+| `/devices`              | Device selection              |
+| `/estimation/:deviceId` | Price & delay estimation      |
+| `/repairers/:deviceId`  | Repairer comparison           |
+| `/tracking/:repairId`   | Status timeline               |
+
+**Copilot should always create screens as functional components using React Router hooks**:
+
+```ts
+import { useParams, useNavigate } from "react-router-dom";
+```
+
+---
+
+## ? UI Style Guidelines
+
+* Use **Tailwind** utility classes
+* Prefer **shadcn/ui** components when possible:
+
+    * `Button`, `Card`, `Input`, `Badge`, `Dialog`, `Tabs`
+* Visual tone: **clean, friendly, trustworthy**
+* Use icons with lucide-react if helpful (`npm install lucide-react`)
+
+### Example Component Style
+
+```tsx
+import { Card } from "@/components/ui/card";
+
+export function RepairerCard({ name, rating, verified, distance }: Props) {
+  return (
+    <Card className="p-4 flex justify-between items-center">
+      <div>
+        <div className="font-semibold">{name}</div>
+        <div className="text-sm opacity-60">{distance}</div>
+      </div>
+      <div className="text-sm">
+        ? {rating}
+        {verified && <span className="ml-2 text-green-600 text-xs">Verified</span>}
+      </div>
+    </Card>
+  );
+}
+```
+
+---
+
+## ?? Data Access Pattern
+
+We use **Supabase client directly** in components or `features/*/hooks.ts`.
+
+### Example
+
+```ts
+import { supabase } from "@/lib/supabase";
+
+export async function getRepairers() {
+  const { data } = await supabase
+    .from("profils")
+    .select("id, nom, rating, verified, localisation")
+    .eq("role", "reparateur");
+  return data;
+}
+```
+
+**Copilot should not**:
+
+* create Redux/Zustand state unless explicitly asked
+* introduce heavy data abstraction layers
+
+---
+
+## ? Screen Development Workflow (Copilot should follow this)
+
+For each new screen:
+
+1. Create the route page in `/routes/...`
+2. Import or create UI components in `/components`
+3. Fetch data via Supabase inside `useEffect` or `useQuery` (if asked later)
+4. Use Tailwind + shadcn/ui to layout the page
+5. Add navigation using `useNavigate()`
+6. Keep components small & declarative
+
+---
+
+## ? Core Screens to Implement
+
+| Feature                  | Description                                    | Priority |
+| ------------------------ | ---------------------------------------------- | -------- |
+| Device selection         | List devices, select one                       | High     |
+| Estimation view          | Show price range & repair time                 | High     |
+| Repairer comparison      | Show verified repairers with rating & distance | High     |
+| Repair tracking timeline | Visual step-by-step progress                   | High     |
+
+**Copilot may create placeholder/mock data temporarily if a screen is being designed before data hooking.**
+
+---
+
+## ? Copilot Behavioral Guidelines
+
+* Prefer clarity over cleverness
+* Always generate accessible components (labels, alt text)
+* Keep styles consistent, non-fragmented
+* Use shadcn components when similar components exist
+* Only abstract when duplication appears 3+ times
+
+---
+
+## ? Copilot can now autonomously generate screens.
+
+When prompted to "Create a screen" or "Add UI", Copilot should now:
+
+* Understand project purpose
+* Place code in the correct folders
+* Use Tailwind + shadcn
+* Query data from Supabase
+* Produce shippable UI layouts
+
+End of instructions.
