@@ -27,6 +27,59 @@ No custom backend services. No complex auth flows.
 
 ---
 
+## ?? Development Environment
+
+This project runs in a **WSL 2 (Windows Subsystem for Linux)** environment.
+
+**Project root path:**
+The command run directly on terminal from project root is:
+```bash
+/mnt/c/workspace2/repair-poc
+```
+
+**When running commands, always use Linux syntax:**
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Lint code
+npm run lint
+
+# Preview production build
+npm run preview
+```
+
+**File operations:**
+```bash
+# Create new file
+touch src/components/NewComponent.tsx
+
+# Remove file
+rm src/components/OldComponent.tsx
+
+# Create directory
+mkdir -p src/features/new-feature
+
+# List files
+ls -la src/routes/
+```
+
+**Important notes:**
+- Use forward slashes `/` for paths (Linux style)
+- File paths are case-sensitive
+- Use `rm` instead of `del` for file deletion
+- Use `mkdir -p` to create nested directories
+- Commands should be run from project root: `/mnt/c/workspace2/repair-poc`
+
+---
+
 ## ? Project Structure (Guideline for Copilot)
 
 ```
