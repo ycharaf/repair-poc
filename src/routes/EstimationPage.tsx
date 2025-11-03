@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
+import { EstimationCard } from '@/features/estimation/EstimationCard';
+
 interface Estimation {
   priceMin: number;
   priceMax: number;
@@ -10,15 +12,17 @@ interface Estimation {
   delayMax: number;
   deviceName: string;
 }
+
 export default function EstimationPage() {
   const { deviceId } = useParams();
   const navigate = useNavigate();
   const [estimation, setEstimation] = useState<Estimation | null>(null);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetchEstimation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceId]);
+
   async function fetchEstimation() {
     try {
       const { data, error } = await supabase
@@ -26,6 +30,7 @@ export default function EstimationPage() {
         .select('*')
         .eq('appareil_id', deviceId)
         .single();
+
       if (error || !data) {
         console.error('Error fetching estimation:', error);
         setEstimation(null);
@@ -45,6 +50,7 @@ export default function EstimationPage() {
       setLoading(false);
     }
   }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -52,6 +58,7 @@ export default function EstimationPage() {
       </div>
     );
   }
+
   if (!estimation) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -67,34 +74,21 @@ export default function EstimationPage() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl font-bold mb-2">Estimation de réparation</h1>
           <p className="text-gray-600 mb-8">{estimation.deviceName}</p>
-          <Card className="p-8 mb-6">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <div className="text-sm text-gray-600 mb-2">Prix estimé</div>
-                <div className="text-4xl font-bold text-blue-600">
-                  {estimation.priceMin}€ - {estimation.priceMax}€
-                </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  Prix TTC, pièces et main d'œuvre incluses
-                </p>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600 mb-2">Délai estimé</div>
-                <div className="text-4xl font-bold text-green-600">
-                  {estimation.delayMin}-{estimation.delayMax} jours
-                </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  Selon disponibilité du réparateur
-                </p>
-              </div>
-            </div>
-          </Card>
+
+          <EstimationCard
+            priceMin={estimation.priceMin}
+            priceMax={estimation.priceMax}
+            delayMin={estimation.delayMin}
+            delayMax={estimation.delayMax}
+          />
+
           <Card className="p-6 mb-6">
             <h3 className="font-semibold text-lg mb-4">Ce qui est inclus</h3>
             <ul className="space-y-3">
@@ -116,6 +110,7 @@ export default function EstimationPage() {
               </li>
             </ul>
           </Card>
+
           <div className="flex gap-4">
             <Button variant="outline" onClick={() => navigate('/devices')}>
               Retour

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/lib/supabase';
+import { RepairerCard } from '@/features/repairers/RepairerCard';
+
 interface Repairer {
   id: string;
   nom: string;
@@ -15,15 +15,17 @@ interface Repairer {
   garantie_mois: number;
   prix_moyen: number;
 }
+
 export default function RepairersPage() {
   const { deviceId } = useParams();
   const navigate = useNavigate();
   const [repairers, setRepairers] = useState<Repairer[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetchRepairers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   async function fetchRepairers() {
     try {
       const { data, error } = await supabase
@@ -32,6 +34,7 @@ export default function RepairersPage() {
         .eq('role', 'reparateur')
         .eq('verified', true)
         .order('rating', { ascending: false });
+
       if (error) {
         console.error('Error fetching repairers:', error);
         setRepairers([]);
@@ -48,11 +51,13 @@ export default function RepairersPage() {
       setLoading(false);
     }
   }
+
   function calculateDistance(_location: string): string {
     // This would use a real geolocation API in production
     const distances = ['0.5 km', '1.2 km', '2.8 km', '3.5 km', '5.0 km'];
     return distances[Math.floor(Math.random() * distances.length)];
   }
+
   async function handleSelectRepairer(repairerId: string) {
     try {
       // Get device info
@@ -112,6 +117,7 @@ export default function RepairersPage() {
       alert('Une erreur est survenue');
     }
   }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -119,6 +125,7 @@ export default function RepairersPage() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
@@ -127,6 +134,7 @@ export default function RepairersPage() {
           <p className="text-gray-600 mb-8">
             Comparez les réparateurs vérifiés près de chez vous
           </p>
+
           {repairers.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl text-gray-600 mb-4">Aucun réparateur disponible pour le moment</p>
@@ -140,51 +148,23 @@ export default function RepairersPage() {
           ) : (
             <div className="space-y-4">
               {repairers.map((repairer) => (
-                <Card key={repairer.id} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex flex-col md:flex-row justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-xl">{repairer.nom}</h3>
-                        {repairer.verified && (
-                          <Badge variant="default" className="bg-green-600">
-                            ✓ Vérifié
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                        <span className="flex items-center">
-                          ⭐ {repairer.rating.toFixed(1)}
-                        </span>
-                        <span className="flex items-center">
-                          📍 {repairer.distance}
-                        </span>
-                        <span className="flex items-center">
-                          📍 {repairer.localisation}
-                        </span>
-                      </div>
-                      <div className="flex gap-2 mb-3">
-                        {repairer.specialites.map((spec, i) => (
-                          <Badge key={i} variant="secondary">
-                            {spec}
-                          </Badge>
-                        ))}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        <span className="font-medium">Garantie:</span> {repairer.garantie_mois} mois
-                        <span className="mx-2">•</span>
-                        <span className="font-medium">Prix moyen:</span> {repairer.prix_moyen}€
-                      </div>
-                    </div>
-                    <div className="flex flex-col justify-center md:items-end">
-                      <Button onClick={() => handleSelectRepairer(repairer.id)}>
-                        Sélectionner
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
+                <RepairerCard
+                  key={repairer.id}
+                  id={repairer.id}
+                  nom={repairer.nom}
+                  rating={repairer.rating}
+                  verified={repairer.verified}
+                  distance={repairer.distance}
+                  localisation={repairer.localisation}
+                  specialites={repairer.specialites}
+                  garantie_mois={repairer.garantie_mois}
+                  prix_moyen={repairer.prix_moyen}
+                  onSelect={handleSelectRepairer}
+                />
               ))}
             </div>
           )}
+
           <div className="mt-6">
             <Button variant="outline" onClick={() => navigate(`/estimation/${deviceId}`)}>
               Retour à l'estimation

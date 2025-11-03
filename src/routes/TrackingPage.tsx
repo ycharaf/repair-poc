@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/lib/supabase';
+import { TimelineStep } from '@/features/tracking/TimelineStep';
 
 interface RepairStep {
   id: string;
@@ -185,41 +185,15 @@ export default function TrackingPage() {
 
             <div className="space-y-8">
               {steps.map((step, index) => (
-                <div key={step.id} className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
-                        step.status === 'completed' 
-                          ? 'bg-green-600' 
-                          : step.status === 'current'
-                          ? 'bg-blue-600'
-                          : 'bg-gray-300'
-                      }`}
-                    >
-                      {step.status === 'completed' ? 'V' : index + 1}
-                    </div>
-                    {index < steps.length - 1 && (
-                      <div
-                        className={`w-0.5 h-16 ${
-                          step.status === 'completed' ? 'bg-green-600' : 'bg-gray-300'
-                        }`}
-                      />
-                    )}
-                  </div>
-
-                  <div className="flex-1 pb-8">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-lg">{step.label}</h3>
-                      {step.status === 'current' && (
-                        <Badge variant="default">En cours</Badge>
-                      )}
-                    </div>
-                    {step.timestamp && (
-                      <div className="text-sm text-gray-600 mb-2">{step.timestamp}</div>
-                    )}
-                    <p className="text-sm text-gray-600">{step.description}</p>
-                  </div>
-                </div>
+                <TimelineStep
+                  key={step.id}
+                  index={index}
+                  label={step.label}
+                  status={step.status}
+                  timestamp={step.timestamp}
+                  description={step.description}
+                  isLast={index === steps.length - 1}
+                />
               ))}
             </div>
           </Card>
