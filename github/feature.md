@@ -1,234 +1,249 @@
-# Fonctionnalités à développer
 
-## ? Fonctionnalités implémentées
+# Feature: Diagnostic Conversationnel (Page dÃ©diÃ©e)
 
-- [x] Page d'accueil avec proposition de valeur
-- [x] Sélection d'appareil à réparer
-- [x] Estimation de prix et délais de réparation
-- [x] Comparaison de réparateurs vérifiés
-- [x] Suivi en temps réel avec timeline de réparation
-- [x] Navigation entre les pages avec React Router
-- [x] Composants UI réutilisables (shadcn/ui)
-- [x] Intégration Supabase avec fallback sur données mock
+## ðŸ“± **Important : Projet 100% Mobile**
+
+Cette application est conÃ§ue **exclusivement pour mobile** :
+- Interface optimisÃ©e pour Ã©crans tactiles (smartphones)
+- Navigation adaptÃ©e au pouce (thumb-friendly)
+- Composants et interactions pensÃ©s mobile-first
+- Pas de version desktop prÃ©vue dans le POC
 
 ---
 
-## ? Prochaines fonctionnalités prioritaires
+Cette feature ajoute une page **/diagnostic** avec une interface de chat **pleine page mobile**, permettant Ã  l'utilisateur de dÃ©crire son problÃ¨me et d'Ãªtre guidÃ© par un **agent IA (Lyro)** pour rÃ©aliser un **prÃ©-diagnostic** avant mise en relation avec un rÃ©parateur.
 
-### 1. Authentification utilisateur
-**Priorité : Haute**
-
-- [ ] Inscription utilisateur (email + mot de passe)
-- [ ] Connexion utilisateur
-- [ ] Déconnexion
-- [ ] Profil utilisateur
-- [ ] Récupération de mot de passe
-- [ ] Protection des routes (réparateurs, tracking)
-
-**Composants à créer :**
-- `src/routes/LoginPage.tsx`
-- `src/routes/SignupPage.tsx`
-- `src/routes/ProfilePage.tsx`
-- `src/features/auth/hooks.ts`
-- `src/features/auth/AuthContext.tsx`
+L'interface est **internalisÃ©e dans React** (pas de widget Tidio flottant) et optimisÃ©e pour l'utilisation sur smartphone.
 
 ---
 
-### 2. Gestion du panier / Réservation
-**Priorité : Haute**
+## ðŸŽ¯ Objectifs
 
-- [ ] Sélection de date et heure pour la réparation
-- [ ] Résumé de la réservation
-- [ ] Confirmation de réservation
-- [ ] Envoi de notification par email
-- [ ] Sauvegarde de la réservation dans Supabase
-
-**Composants à créer :**
-- `src/routes/BookingPage.tsx`
-- `src/features/booking/DateTimePicker.tsx`
-- `src/features/booking/BookingSummary.tsx`
-- `src/features/booking/hooks.ts`
+- Collecter 4 informations essentielles :
+    1. Type dâ€™appareil
+    2. Marque / ModÃ¨le
+    3. SymptÃ´mes (texte + photo optionnelle)
+    4. Contexte (Ã¢ge, dernier usage, bruits, odeurs, voyants, etc.)
+- Poser **3 questions de prÃ©-diagnostic simples**.
+- Identifier :
+    - Cas RAS (produit OK)
+    - Cas rÃ©solus par manipulation simple
+    - Cas nÃ©cessitant une visio avec rÃ©parateur
 
 ---
 
-### 3. Tableau de bord utilisateur
-**Priorité : Moyenne**
+## ðŸ§± Architecture RÃ©sumÃ©e
 
-- [ ] Liste de toutes les réparations de l'utilisateur
-- [ ] Filtres par statut (en cours, terminées, annulées)
-- [ ] Historique des réparations
-- [ ] Accès rapide au suivi de chaque réparation
-- [ ] Statistiques personnelles
+```
+React Page /diagnostic (UI conversation)
+â†“
+Lyro API (Tidio) (Agent conversationnel)
+â†“
+Supabase (conversations table + matching rÃ©parateurs)
+```
 
-**Composants à créer :**
-- `src/routes/DashboardPage.tsx`
-- `src/features/dashboard/RepairList.tsx`
-- `src/features/dashboard/RepairFilters.tsx`
-- `src/features/dashboard/Stats.tsx`
+Le widget Tidio est **chargÃ© mais cachÃ©**, lâ€™UI est **faite en React**.
 
 ---
 
-### 4. Interface réparateur
-**Priorité : Moyenne**
+## âœ… Ã‰tape 1 â€” Configuration Lyro (dans Tidio)
 
-- [ ] Tableau de bord réparateur
-- [ ] Liste des demandes de réparation reçues
-- [ ] Accepter/refuser une demande
-- [ ] Mise à jour du statut de réparation
-- [ ] Messagerie avec le client
-- [ ] Gestion du profil réparateur
+1. Tidio â†’ **AI Chatbots â†’ Lyro â†’ Enable**
+2. Tidio â†’ **Lyro â†’ Customize â†’ System instructions**
+3. Coller ce prompt :  
+   *(prompt interne technicien prÃ©-diagnostic)*
 
-**Composants à créer :**
-- `src/routes/repairer/DashboardPage.tsx`
-- `src/routes/repairer/RequestsPage.tsx`
-- `src/features/repairer/RequestCard.tsx`
-- `src/features/repairer/StatusUpdater.tsx`
+4. GÃ©nÃ©rer un token API :  
+   `AI Chatbots â†’ Lyro â†’ Settings â†’ API Access â†’ Generate Token`
 
----
+5. Ajouter au `.env` :
 
-### 5. Système de notation et avis
-**Priorité : Moyenne**
-
-- [ ] Laisser un avis après réparation
-- [ ] Note sur 5 étoiles
-- [ ] Commentaire textuel
-- [ ] Affichage des avis sur la page du réparateur
-- [ ] Moyenne des notes
-- [ ] Modération des avis
-
-**Composants à créer :**
-- `src/features/reviews/ReviewForm.tsx`
-- `src/features/reviews/ReviewCard.tsx`
-- `src/features/reviews/ReviewList.tsx`
-- `src/features/reviews/hooks.ts`
+```env
+VITE_LYRO_TOKEN=sk_xxxxx
+```
 
 ---
 
-### 6. Système de paiement
-**Priorité : Basse (POC)**
+## ðŸŸ£ Ã‰tape 2 â€” Masquer le widget Tidio
 
-- [ ] Intégration Stripe ou autre solution
-- [ ] Paiement en ligne sécurisé
-- [ ] Historique des paiements
-- [ ] Factures téléchargeables
-- [ ] Remboursements
+## ðŸŸ¢ Ã‰tape 3 â€” Interface React Mobile (page `/diagnostic`)
 
-**Composants à créer :**
-- `src/routes/PaymentPage.tsx`
-- `src/features/payment/CheckoutForm.tsx`
-- `src/features/payment/InvoiceDownload.tsx`
+```css
+#tidio-chat-iframe {
+  display: none !important;
+}
+```
 
 ---
 
-### 7. Notifications en temps réel
-**Priorité : Basse**
+## ðŸŸ¢ Ã‰tape 3 â€” Interface React (page `/diagnostic`)
 
-- [ ] Notifications push dans le navigateur
-- [ ] Notifications par email
-- [ ] Centre de notifications dans l'app
-- [ ] Préférences de notification
+CrÃ©er `src/pages/Diagnostic.tsx` :
 
-**Composants à créer :**
-- `src/features/notifications/NotificationCenter.tsx`
-- `src/features/notifications/NotificationPreferences.tsx`
-- `src/features/notifications/hooks.ts`
+```tsx
+import { useState } from "react";
+
+export default function Diagnostic() {
+  const [messages, setMessages] = useState([
+    { from: "bot", text: "Bonjour ðŸ‘‹ DÃ©cris-moi ton problÃ¨me." }
+  ]);
+  const [input, setInput] = useState("");
+
+  async function sendMessage() {
+    setMessages((m) => [...m, { from: "user", text: input }]);
+
+    const res = await fetch("https://api.tidio.co/lyro/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_LYRO_TOKEN}`
+      },
+      body: JSON.stringify({
+        message: input,
+    <div className="flex flex-col h-screen bg-white">
+      {/* Header mobile */}
+      <div className="sticky top-0 bg-white border-b px-4 py-4 shadow-sm">
+        <h1 className="text-xl font-bold">Diagnostic guidÃ©</h1>
+      </div>
+    });
+      {/* Messages - zone scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+    const data = await res.json();
+          <div key={i} className={m.from === "user" ? "flex justify-end" : "flex justify-start"}>
+            <span className={`inline-block px-4 py-3 rounded-2xl max-w-[80%] ${
+              m.from === "user" 
+                ? "bg-blue-600 text-white" 
+                : "bg-gray-100 text-gray-900"
+            }`}>
+  }
+
+  return (
+    <div className="p-6 max-w-xl mx-auto space-y-4">
+      <h1 className="text-2xl font-bold">Diagnostic guidÃ©</h1>
+
+      {/* Input - fixÃ© en bas (mobile keyboard friendly) */}
+      <div className="sticky bottom-0 bg-white border-t px-4 py-3 safe-area-inset-bottom">
+        <div className="flex gap-2 items-end">
+          <input
+            className="flex-1 border rounded-full px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-600"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            placeholder="Votre rÃ©ponse..."
+            autoComplete="off"
+          />
+          <button 
+            onClick={sendMessage} 
+            disabled={!input.trim()}
+            className="bg-blue-600 text-white p-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-transform"
+            aria-label="Envoyer le message"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </div>
+      <div className="flex gap-2">
+        <input
+          className="flex-1 border rounded-lg p-2"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+
+### ðŸ“± SpÃ©cificitÃ©s Mobile :
+- **Layout pleine hauteur** (`h-screen`) pour occuper tout l'Ã©cran mobile
+- **Messages scrollables** avec zone de saisie fixÃ©e en bas
+- **Bulles de chat** avec max-width 80% pour lisibilitÃ© mobile
+- **Input circulaire** optimisÃ© pour le pouce
+- **Bouton d'envoi tactile** avec feedback visuel (`active:scale-95`)
+- **Support clavier mobile** avec `onKeyPress` pour Enter
+- **Safe area inset** pour les notchs/barres de navigation iOS
+- **Tailles de touch targets** â‰¥ 44px (recommandation Apple/Google)
+          placeholder="Votre rÃ©ponse..."
+        />
+        <button onClick={sendMessage} className="bg-black text-white px-4 py-2 rounded-lg">
+          Envoyer
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+Ajouter la route :
+
+```tsx
+<Route path="/diagnostic" element={<Diagnostic />} />
+```
+
+| Page `/diagnostic` visible sur mobile | âœ… |
+| Chat fonctionne en plein Ã©cran mobile | âœ… |
+## ðŸ”µ Ã‰tape 4 â€” Stockage dans Supabase (option recommandÃ©)
+
+| Interface tactile optimisÃ©e (touch targets â‰¥ 44px) | âœ… |
+| Clavier mobile bien gÃ©rÃ© (input fixÃ© en bas) | âœ… |
+| Scroll fluide des messages | âœ… |
+| Safe area iOS respectÃ©e | âœ… |
+CrÃ©er table SQL :
 
 ---
 
-### 8. Recherche et filtres avancés
-**Priorité : Basse**
+## ðŸ“± Tests Mobile RecommandÃ©s
 
-- [ ] Recherche d'appareils par modèle
-- [ ] Filtres par marque, type, prix
-- [ ] Recherche de réparateurs par localisation
-- [ ] Filtres par distance, note, prix
-- [ ] Tri des résultats
-
-**Composants à créer :**
-- `src/features/search/SearchBar.tsx`
-- `src/features/search/FilterPanel.tsx`
-- `src/features/search/hooks.ts`
+1. **Responsive** : Tester sur iPhone SE (petit Ã©cran) et iPhone 14 Pro Max (grand Ã©cran)
+2. **Clavier** : VÃ©rifier que l'input reste visible quand le clavier mobile apparaÃ®t
+3. **Scroll** : Messages plus anciens accessibles par scroll fluide
+4. **Touch** : Tous les boutons tactiles facilement cliquables au pouce
+5. **Orientation** : Tester portrait uniquement (pas de landscape pour le chat)
+6. **Performance** : VÃ©rifier que le chat reste fluide avec 50+ messages
 
 ---
 
-### 9. Chat en direct
-**Priorité : Basse**
+## ðŸŽ¨ Design Mobile Best Practices AppliquÃ©s
 
-- [ ] Chat entre client et réparateur
-- [ ] Messages en temps réel (Supabase Realtime)
-- [ ] Historique des conversations
-- [ ] Notifications de nouveaux messages
-- [ ] Envoi de photos
+- âœ… **Touch targets minimums** : 44x44px (Apple) / 48x48dp (Material Design)
+- âœ… **Thumb zone** : Boutons principaux en bas, accessibles au pouce
+- âœ… **Feedback tactile** : Animations au tap (`active:scale-95`)
+- âœ… **Contrast ratio** : 4.5:1 minimum (WCAG AA)
+- âœ… **Font size** : 16px minimum pour Ã©viter le zoom auto iOS
+- âœ… **Safe areas** : Respect des notchs et barres de navigation
+- âœ… **Fixed input** : Clavier mobile ne cache pas la zone de saisie
 
-**Composants à créer :**
-- `src/routes/ChatPage.tsx`
-- `src/features/chat/ChatWindow.tsx`
-- `src/features/chat/MessageInput.tsx`
-- `src/features/chat/hooks.ts`
+```sql
+create table conversations (
+  id bigint generated always as identity primary key,
+  session_id text,
+  sender text,
+  message text,
+  created_at timestamptz default now()
+);
+```
 
----
+Ajouter lâ€™enregistrement dans `sendMessage()` :
 
-### 10. Amélioration de l'expérience mobile
-**Priorité : Moyenne**
-
-- [ ] Design responsive optimisé
-- [ ] Menu mobile hamburger
-- [ ] Navigation par swipe
-- [ ] PWA (Progressive Web App)
-- [ ] Installation sur écran d'accueil
-
----
-
-## ? Améliorations techniques
-
-### Performance
-- [ ] Lazy loading des routes
-- [ ] Optimisation des images
-- [ ] Code splitting
-- [ ] Mise en cache avec React Query
-
-### Tests
-- [ ] Tests unitaires (Vitest)
-- [ ] Tests d'intégration
-- [ ] Tests E2E (Playwright)
-- [ ] Coverage à 80%+
-
-### SEO & Accessibilité
-- [ ] Métadonnées dynamiques
-- [ ] Sitemap
-- [ ] Schema.org markup
-- [ ] Tests d'accessibilité WCAG 2.1 AA
-- [ ] Support clavier complet
-
-### DevOps
-- [ ] CI/CD avec GitHub Actions
-- [ ] Déploiement automatique
-- [ ] Tests automatisés
-- [ ] Monitoring d'erreurs (Sentry)
-- [ ] Analytics (Plausible/Google Analytics)
+```ts
+await fetch("https://YOUR_PROJECT.supabase.co/rest/v1/conversations", {
+  method: "POST",
+  headers: {
+    apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    session_id: "client-demo",
+    sender: "user",
+    message: input
+  })
+});
+```
 
 ---
 
-## ? Métriques de succès
+## âœ… CritÃ¨res de complÃ©tion
 
-Pour chaque fonctionnalité, mesurer :
-- Taux d'adoption utilisateur
-- Temps de complétion
-- Taux de conversion
-- Satisfaction utilisateur (NPS)
-- Performance (Core Web Vitals)
-
----
-
-## ? Notes
-
-- Prioriser les fonctionnalités selon le feedback utilisateur
-- Toujours implémenter les données mock en premier pour tester l'UI
-- Utiliser les composants shadcn/ui existants quand possible
-- Maintenir la simplicité et la clarté de l'expérience utilisateur
-- Chaque fonctionnalité doit avoir ses propres tests
-
----
-
-**Dernière mise à jour :** 2025-01-11
-
+| Ã‰lÃ©ment | Ã‰tat attendu |
+|--------|:------------:|
+| Page `/diagnostic` visible | âœ… |
+| Chat fonctionne | âœ… |
+| Lyro rÃ©pond | âœ… |
+| Widget Tidio invisible | âœ… |
+| (optionnel) stockage Supabase | âœ… |

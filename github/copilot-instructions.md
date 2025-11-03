@@ -1,8 +1,9 @@
-# Copilot Instructions � React Frontend (Vite + React Router + Tailwind + shadcn/ui)
+# Copilot Instructions — React Frontend (Vite + React Router + Tailwind + shadcn/ui)
 
 ## ? Project Goal
 
-This project is a **proof of concept** demonstrating a **smooth, trustworthy device repair experience**, comparable to buying new. The core value is **rebuilding trust** between customers and repairers.
+This project is a **proof of concept** demonstrating a **smooth, trustworthy device repair experience**, comparable to
+buying new. The core value is **rebuilding trust** between customers and repairers.
 
 The POC focuses on:
 
@@ -21,11 +22,19 @@ We are optimizing for **speed**, **clarity**, and **demo impact**, *not* product
 * **React Router** (for navigation)
 * **TailwindCSS** (for fast UI development)
 * **shadcn/ui** (for pre-built accessible components)
-* **Supabase** (data + lightweight auth)
+* **Supabase** (data sans auth)
+* - **Tidio Chatbot** (support + pré-diagnostic conversationnel)
 
-No custom backend services. No complex auth flows.
+
+No custom backend services. No auth flows. User already "logged in" for POC.
 
 ---
+
+### 📌 Tidio Chatbot Integration (IMPORTANT)
+Le script doit être ajouté **dans `index.html`**, juste avant la balise `</body>` :
+
+```html
+<script src="//code.tidio.co/6nua85kfh7hmk82hefsmyuzzv9de0pqc.js" async></script>
 
 ## ?? Development Environment
 
@@ -33,6 +42,7 @@ This project runs in a **WSL 2 (Windows Subsystem for Linux)** environment.
 
 **Project root path:**
 The command run directly on terminal from project root is:
+
 ```bash
 /mnt/c/workspace2/repair-poc
 ```
@@ -57,6 +67,7 @@ npm run preview
 ```
 
 **File operations:**
+
 ```bash
 # Create new file
 touch src/components/NewComponent.tsx
@@ -72,6 +83,7 @@ ls -la src/routes/
 ```
 
 **Important notes:**
+
 - Use forward slashes `/` for paths (Linux style)
 - File paths are case-sensitive
 - Use `rm` instead of `del` for file deletion
@@ -109,7 +121,7 @@ src/
 We use **React Router** with the following routes:
 
 | Route                   | Purpose                       |
-| ----------------------- | ----------------------------- |
+|-------------------------|-------------------------------|
 | `/`                     | Home page (value proposition) |
 | `/devices`              | Device selection              |
 | `/estimation/:deviceId` | Price & delay estimation      |
@@ -119,7 +131,7 @@ We use **React Router** with the following routes:
 **Copilot should always create screens as functional components using React Router hooks**:
 
 ```ts
-import { useParams, useNavigate } from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 ```
 
 ---
@@ -136,21 +148,21 @@ import { useParams, useNavigate } from "react-router-dom";
 ### Example Component Style
 
 ```tsx
-import { Card } from "@/components/ui/card";
+import {Card} from "@/components/ui/card";
 
-export function RepairerCard({ name, rating, verified, distance }: Props) {
-  return (
-    <Card className="p-4 flex justify-between items-center">
-      <div>
-        <div className="font-semibold">{name}</div>
-        <div className="text-sm opacity-60">{distance}</div>
-      </div>
-      <div className="text-sm">
-        ? {rating}
-        {verified && <span className="ml-2 text-green-600 text-xs">Verified</span>}
-      </div>
-    </Card>
-  );
+export function RepairerCard({name, rating, verified, distance}: Props) {
+    return (
+        <Card className="p-4 flex justify-between items-center">
+            <div>
+                <div className="font-semibold">{name}</div>
+                <div className="text-sm opacity-60">{distance}</div>
+            </div>
+            <div className="text-sm">
+                ? {rating}
+                {verified && <span className="ml-2 text-green-600 text-xs">Verified</span>}
+            </div>
+        </Card>
+    );
 }
 ```
 
@@ -163,14 +175,14 @@ We use **Supabase client directly** in components or `features/*/hooks.ts`.
 ### Example
 
 ```ts
-import { supabase } from "@/lib/supabase";
+import {supabase} from "@/lib/supabase";
 
 export async function getRepairers() {
-  const { data } = await supabase
-    .from("profils")
-    .select("id, nom, rating, verified, localisation")
-    .eq("role", "reparateur");
-  return data;
+    const {data} = await supabase
+        .from("profils")
+        .select("id, nom, rating, verified, localisation")
+        .eq("role", "reparateur");
+    return data;
 }
 ```
 
@@ -197,7 +209,7 @@ For each new screen:
 ## ? Core Screens to Implement
 
 | Feature                  | Description                                    | Priority |
-| ------------------------ | ---------------------------------------------- | -------- |
+|--------------------------|------------------------------------------------|----------|
 | Device selection         | List devices, select one                       | High     |
 | Estimation view          | Show price range & repair time                 | High     |
 | Repairer comparison      | Show verified repairers with rating & distance | High     |
