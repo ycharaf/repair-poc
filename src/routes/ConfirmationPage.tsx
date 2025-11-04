@@ -138,7 +138,7 @@ export default function ConfirmationPage() {
 
         return (
             <MobileLayout title="Récapitulatif de l'appel">
-                <div className="flex flex-col h-full p-4 pb-32 overflow-y-auto">
+                <div className="flex flex-col h-full p-4 pb-4 overflow-y-auto">
                     {/* Titre principal */}
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">
                         Résumé de votre diagnostic
@@ -252,18 +252,19 @@ export default function ConfirmationPage() {
                         ))}
                     </div>
 
-                    {/* Bouton fixe en bas */}
-                    <Button
-                        onClick={handleFinish}
-                        className="w-full h-12 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-transform"
-                    >
-                        Valider et terminer
-                    </Button>
+                    {/* Bouton en bas du contenu */}
+                    <div className="mt-6">
+                        <Button
+                            onClick={() => navigate('/quote-intervention')}
+                            className="w-full h-12 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-transform"
+                        >
+                            Continuer vers le devis
+                        </Button>
+                    </div>
                 </div>
             </MobileLayout>
         );
     }
-
     if (method === 'store' && storeInfo) {
         return (
             <MobileLayout title="Confirmation">

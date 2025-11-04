@@ -219,6 +219,56 @@ For each new screen:
 
 ---
 
+## 📚 Documentation
+
+### Feature Documentation
+
+* **Feature 3 - Devis et intervention**
+  * `github/FEATURE3_IMPLEMENTATION.md` - Documentation détaillée de l'implémentation
+  * `github/FEATURE3_SUMMARY.md` - Résumé de la feature 3
+
+### Layout Guidelines
+
+* **Règles de positionnement des boutons**
+  * `LAYOUT_RULES.md` - Règles globales de layout et bonnes pratiques
+  * `github/BUTTON_POSITIONING_FIX.md` - Correction du positionnement des boutons d'action
+
+---
+
+## 📐 Layout Rules (IMPORTANT)
+
+### ❌ À NE JAMAIS FAIRE
+
+**Ne jamais utiliser de boutons avec `position: fixed` qui se superposent au menu footer.**
+
+```typescript
+// ❌ MAUVAIS
+<div className="fixed bottom-0 left-0 right-0 p-4">
+  <Button>Action</Button>
+</div>
+```
+
+### ✅ BONNE PRATIQUE
+
+**Les boutons d'action doivent appartenir à la div mère de leur layout.**
+
+```typescript
+// ✅ BON
+<MobileLayout title="Titre">
+  <div className="flex-1 overflow-y-auto p-4 pb-4">
+    {/* Contenu */}
+    
+    <div className="mt-6 pb-4">
+      <Button>Action</Button>
+    </div>
+  </div>
+</MobileLayout>
+```
+
+**Voir `LAYOUT_RULES.md` pour plus de détails.**
+
+---
+
 ## ? Copilot Behavioral Guidelines
 
 * Prefer clarity over cleverness

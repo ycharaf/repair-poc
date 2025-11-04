@@ -8,6 +8,7 @@ import ChooseMethodPage from "./routes/ChooseMethodPage";
 import VisioPage from "./routes/VisioPage";
 import StoreSelectionPage from "./routes/StoreSelectionPage";
 import ConfirmationPage from "./routes/ConfirmationPage";
+import QuoteInterventionPage from "./routes/QuoteInterventionPage";
 
 export function App() {
     return (
@@ -17,6 +18,7 @@ export function App() {
             <Route path="/estimation" element={<EstimationPage />} />
             <Route path="/choose-method" element={<ChooseMethodPage />} />
             <Route path="/appointment/visio" element={<VisioPage />} />
+            <Route path="/quote-intervention" element={<QuoteInterventionPage />} />
             <Route path="/appointment/store" element={<StoreSelectionPage />} />
             <Route path="/confirmation" element={<ConfirmationPage />} />
             <Route path="/appointments" element={<AppointmentsPage />} />
