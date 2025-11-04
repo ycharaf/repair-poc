@@ -10,7 +10,7 @@ export default function VisioPage() {
     const [meetLink, setMeetLink] = useState('');
 
     useEffect(() => {
-        // Simuler la génération d'un lien Google Meet
+        // Simuler la gÃ©nÃ©ration d'un lien Google Meet
         setTimeout(() => {
             const sessionId = crypto.randomUUID().slice(0, 10);
             setMeetLink(`https://meet.google.com/rep-${sessionId}`);
@@ -28,24 +28,24 @@ export default function VisioPage() {
     };
 
     return (
-        <MobileLayout title="Visio immédiate">
+        <MobileLayout title="Visio immÃ©diate">
             <div className="flex flex-col h-full p-4">
                 {isGenerating ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <div className="text-6xl mb-4 animate-pulse">?</div>
+                        <div className="text-6xl mb-4 animate-pulse">ðŸŽ¥</div>
                         <h2 className="text-xl font-bold text-gray-900 mb-2">
-                            Préparation de votre visio...
+                            PrÃ©paration de votre visio...
                         </h2>
                         <p className="text-gray-600">
-                            Génération du lien de connexion sécurisé
+                            GÃ©nÃ©ration du lien de connexion sÃ©curisÃ©
                         </p>
                     </div>
                 ) : (
                     <>
                         <div className="mb-6">
-                            <div className="text-6xl text-center mb-4">?</div>
+                            <div className="text-6xl text-center mb-4">âœ…</div>
                             <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
-                                Votre visio est prête !
+                                Votre visio est prÃªte !
                             </h2>
                             <p className="text-gray-600 text-center">
                                 Un technicien va vous rejoindre dans quelques instants
@@ -71,25 +71,25 @@ export default function VisioPage() {
 
                         <Card className="p-6 mb-6">
                             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                <span>?</span>
+                                <span>ðŸ’¡</span>
                                 <span>Avant de commencer</span>
                             </h3>
                             <ul className="space-y-2 text-sm text-gray-700">
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-0.5">?</span>
-                                    <span>Vérifiez que votre caméra et micro sont activés</span>
+                                    <span className="text-green-600 mt-0.5">âœ“</span>
+                                    <span>VÃ©rifiez que votre camÃ©ra et micro sont activÃ©s</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-0.5">?</span>
+                                    <span className="text-green-600 mt-0.5">âœ“</span>
                                     <span>Assurez-vous d'avoir une bonne connexion internet</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-0.5">?</span>
-                                    <span>Préparez votre appareil en panne à portée de main</span>
+                                    <span className="text-green-600 mt-0.5">âœ“</span>
+                                    <span>PrÃ©parez votre appareil en panne Ã  portÃ©e de main</span>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                    <span className="text-green-600 mt-0.5">?</span>
-                                    <span>Le technicien vous guidera étape par étape</span>
+                                    <span className="text-green-600 mt-0.5">âœ“</span>
+                                    <span>Le technicien vous guidera Ã©tape par Ã©tape</span>
                                 </li>
                             </ul>
                         </Card>
@@ -100,7 +100,7 @@ export default function VisioPage() {
                                 variant="outline"
                                 className="w-full h-12 border-gray-300 hover:bg-gray-50 active:scale-95 transition-transform"
                             >
-                                Préférer un rendez-vous en magasin
+                                PrÃ©fÃ©rer un rendez-vous en magasin
                             </Button>
                         </div>
                     </>

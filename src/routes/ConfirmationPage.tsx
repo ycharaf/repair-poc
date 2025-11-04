@@ -32,7 +32,7 @@ export default function ConfirmationPage() {
     localStorage.removeItem('selected_store');
     localStorage.removeItem('session_id');
 
-    // Retour ‡ l'accueil
+    // Retour √† l'accueil
     navigate('/');
   };
 
@@ -41,35 +41,35 @@ export default function ConfirmationPage() {
       <MobileLayout title="Confirmation">
         <div className="flex flex-col h-full p-4">
           <div className="flex-1 flex flex-col items-center justify-center text-center">
-            <div className="text-8xl mb-6 animate-bounce">?</div>
+            <div className="text-8xl mb-6 animate-bounce">üéâ</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Visio terminÈe avec succËs !
+              Visio termin√©e avec succ√®s !
             </h2>
             <p className="text-gray-600 mb-8">
-              Nous espÈrons que votre problËme a ÈtÈ rÈsolu
+              Nous esp√©rons que votre probl√®me a √©t√© r√©solu
             </p>
 
             <Card className="p-6 mb-6 w-full bg-green-50 border-green-200">
               <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span>?</span>
-                <span>Conseils pour Èviter les pannes</span>
+                <span>üí°</span>
+                <span>Conseils pour √©viter les pannes</span>
               </h3>
               <ul className="space-y-2 text-sm text-gray-700 text-left">
                 <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-0.5">?</span>
-                  <span>Nettoyez rÈguliËrement les ports de charge</span>
+                  <span className="text-green-600 mt-0.5">‚úì</span>
+                  <span>Nettoyez r√©guli√®rement les ports de charge</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-0.5">?</span>
-                  <span>…vitez les tempÈratures extrÍmes</span>
+                  <span className="text-green-600 mt-0.5">‚úì</span>
+                  <span>√âvitez les temp√©ratures extr√™mes</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-0.5">?</span>
+                  <span className="text-green-600 mt-0.5">‚úì</span>
                   <span>Utilisez une coque de protection</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-green-600 mt-0.5">?</span>
-                  <span>Maintenez vos logiciels ‡ jour</span>
+                  <span className="text-green-600 mt-0.5">‚úì</span>
+                  <span>Maintenez vos logiciels √† jour</span>
                 </li>
               </ul>
             </Card>
@@ -79,7 +79,7 @@ export default function ConfirmationPage() {
             onClick={handleFinish}
             className="w-full h-12 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-transform"
           >
-            Retour ‡ l'accueil
+            Retour √† l'accueil
           </Button>
         </div>
       </MobileLayout>
@@ -91,9 +91,9 @@ export default function ConfirmationPage() {
       <MobileLayout title="Confirmation">
         <div className="flex flex-col h-full p-4">
           <div className="mb-6 text-center">
-            <div className="text-8xl mb-6">?</div>
+            <div className="text-8xl mb-6">‚úÖ</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Rendez-vous confirmÈ !
+              Rendez-vous confirm√© !
             </h2>
             <p className="text-gray-600">
               Vous recevrez un SMS de confirmation sous peu
@@ -102,7 +102,7 @@ export default function ConfirmationPage() {
 
           <Card className="p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-4">
-              DÈtails du rendez-vous
+              D√©tails du rendez-vous
             </h3>
             <div className="space-y-3">
               <div>
@@ -118,7 +118,7 @@ export default function ConfirmationPage() {
                 <p className="text-gray-900">{storeInfo.distance}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">DisponibilitÈ</p>
+                <p className="text-sm text-gray-500 mb-1">Disponibilit√©</p>
                 <p className="text-green-600 font-medium">
                   {storeInfo.availability}
                 </p>
@@ -128,24 +128,24 @@ export default function ConfirmationPage() {
 
           <Card className="p-6 mb-6 bg-blue-50 border-blue-200">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <span>?</span>
-              <span>¿ apporter</span>
+              <span>üìã</span>
+              <span>√Ä apporter</span>
             </h3>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">?</span>
+                <span className="text-blue-600 mt-0.5">‚úì</span>
                 <span>Votre appareil en panne</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">?</span>
+                <span className="text-blue-600 mt-0.5">‚úì</span>
                 <span>Chargeur et accessoires</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">?</span>
-                <span>PiËce d'identitÈ</span>
+                <span className="text-blue-600 mt-0.5">‚úì</span>
+                <span>Pi√®ce d'identit√©</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">?</span>
+                <span className="text-blue-600 mt-0.5">‚úì</span>
                 <span>Preuve d'achat si sous garantie</span>
               </li>
             </ul>
@@ -155,18 +155,18 @@ export default function ConfirmationPage() {
             onClick={handleFinish}
             className="w-full h-12 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-transform"
           >
-            Retour ‡ l'accueil
+            Retour √† l'accueil
           </Button>
         </div>
       </MobileLayout>
     );
   }
 
-  // Fallback si pas de mÈthode ou erreur
+  // Fallback si pas de m√©thode ou erreur
   return (
     <MobileLayout title="Confirmation">
       <div className="flex flex-col h-full p-4 items-center justify-center">
-        <div className="text-6xl mb-4">?</div>
+        <div className="text-6xl mb-4">‚ùå</div>
         <h2 className="text-xl font-bold text-gray-900 mb-4">
           Erreur de confirmation
         </h2>
@@ -174,7 +174,7 @@ export default function ConfirmationPage() {
           onClick={() => navigate('/')}
           className="bg-blue-600 hover:bg-blue-700"
         >
-          Retour ‡ l'accueil
+          Retour √† l'accueil
         </Button>
       </div>
     </MobileLayout>

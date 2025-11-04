@@ -16,7 +16,7 @@ interface Store {
 const STORES: Store[] = [
   {
     id: '1',
-    name: 'Save RÈpublique',
+    name: 'Save R√©publique',
     address: '12 Rue du Temple, 75003 Paris',
     distance: '5 min',
     rating: 4.6,
@@ -33,10 +33,10 @@ const STORES: Store[] = [
   {
     id: '3',
     name: 'Repair Center Paris',
-    address: '8 Avenue de la RÈpublique, 75011 Paris',
+    address: '8 Avenue de la R√©publique, 75011 Paris',
     distance: '15 min',
     rating: 4.5,
-    availability: 'aprËs-demain',
+    availability: 'apr√®s-demain',
   },
 ];
 
@@ -46,7 +46,7 @@ export default function StoreSelectionPage() {
 
   const handleSelectStore = (store: Store) => {
     setSelectedStore(store);
-    // Sauvegarder le magasin sÈlectionnÈ
+    // Sauvegarder le magasin s√©lectionn√©
     localStorage.setItem('selected_store', JSON.stringify(store));
   };
 
@@ -64,7 +64,7 @@ export default function StoreSelectionPage() {
             Ateliers partenaires
           </h2>
           <p className="text-gray-600">
-            SÈlectionnez un atelier prËs de chez vous
+            S√©lectionnez un atelier pr√®s de chez vous
           </p>
         </div>
 
@@ -99,15 +99,15 @@ export default function StoreSelectionPage() {
 
               <div className="flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1 text-gray-700">
-                  <span>?</span>
+                  <span>üìç</span>
                   <span>{store.distance}</span>
                 </div>
                 <div className="flex items-center gap-1 text-gray-700">
-                  <span>?</span>
+                  <span>‚≠ê</span>
                   <span>{store.rating}</span>
                 </div>
                 <div className="flex items-center gap-1 text-green-600 font-medium">
-                  <span>?</span>
+                  <span>‚úì</span>
                   <span>Disponible {store.availability}</span>
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function StoreSelectionPage() {
           >
             {selectedStore
               ? `Confirmer - ${selectedStore.name}`
-              : 'SÈlectionnez un atelier'}
+              : 'S√©lectionnez un atelier'}
           </Button>
 
           <Button
@@ -131,7 +131,7 @@ export default function StoreSelectionPage() {
             variant="outline"
             className="w-full h-12 border-gray-300 hover:bg-gray-50 active:scale-95 transition-transform"
           >
-            PrÈfÈrer une visio immÈdiate
+            Pr√©f√©rer une visio imm√©diate
           </Button>
         </div>
       </div>

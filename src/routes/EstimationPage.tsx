@@ -6,54 +6,54 @@ import { MobileLayout } from '@/components/layouts/MobileLayout';
 export default function EstimationPage() {
   const navigate = useNavigate();
 
-  // RÈcupÈrer les donnÈes du diagnostic depuis localStorage ou state management
+  // R√©cup√©rer les donn√©es du diagnostic depuis localStorage ou state management
   const diagnosticData = JSON.parse(localStorage.getItem('diagnostic_data') || '{}');
 
   return (
     <MobileLayout title="Estimation" showBack={true}>
       <div className="flex flex-col h-full p-4">
-        {/* RÈsultat */}
+        {/* R√©sultat */}
         <Card className="p-6 mb-4 bg-green-50 border-green-200">
           <div className="flex items-center gap-3 mb-3">
-            <div className="text-3xl">?</div>
+            <div className="text-3xl">‚úì</div>
             <h2 className="text-lg font-semibold text-green-800">
-              Probablement rÈparable
+              Probablement r√©parable
             </h2>
           </div>
 
           <div className="space-y-3 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">?</span>
+              <span className="text-2xl">üí∂</span>
               <div>
                 <p className="font-medium text-gray-700">Estimation</p>
-                <p className="text-lg font-bold text-gray-900">39Ä ñ 79Ä</p>
+                <p className="text-lg font-bold text-gray-900">39‚Ç¨ ‚Äì 79‚Ç¨</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-2xl">?</span>
+              <span className="text-2xl">‚è±</span>
               <div>
-                <p className="font-medium text-gray-700">DurÈe</p>
-                <p className="text-lg font-bold text-gray-900">45 min ñ 2h</p>
+                <p className="font-medium text-gray-700">Dur√©e</p>
+                <p className="text-lg font-bold text-gray-900">45 min ‚Äì 2h</p>
               </div>
             </div>
           </div>
         </Card>
 
-        {/* RÈcapitulatif */}
+        {/* R√©capitulatif */}
         <Card className="p-4 mb-4">
-          <h3 className="font-semibold mb-3 text-gray-900">RÈcapitulatif</h3>
+          <h3 className="font-semibold mb-3 text-gray-900">R√©capitulatif</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Appareil :</span>
               <span className="font-medium">{diagnosticData.appareil || 'Smartphone'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">ModËle :</span>
+              <span className="text-gray-600">Mod√®le :</span>
               <span className="font-medium">{diagnosticData.modele || 'iPhone 12'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">ProblËme :</span>
+              <span className="text-gray-600">Probl√®me :</span>
               <span className="font-medium">{diagnosticData.symptome || 'Ne s\'allume plus'}</span>
             </div>
           </div>
