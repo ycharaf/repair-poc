@@ -1,4 +1,5 @@
 import {useState, useRef, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
     id: string;
@@ -6,22 +7,34 @@ interface Message {
     content: string;
 }
 
+interface DiagnosticData {
+    appareil?: string;
+    modele?: string;
+    symptome?: string;
+    contexte?: string;
+}
+
 export default function ChatAssistant() {
+    const navigate = useNavigate();
     const [messages, setMessages] = useState<Message[]>([
         {
             id: "intro",
             type: "bot",
-            content: "Bonjour 👋 Je suis votre assistant diagnostic Répare & Vous. Quel est l'appareil en panne ?",
+            content: "Bonjour 👋 Je suis votre assistant diagnostic Répare & Vous.\n\nQuel est l'appareil en panne ? (smartphone, tablette, ordinateur...)",
         }
     ]);
 
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    const [diagnosticData, setDiagnosticData] = useState<DiagnosticData>({});
+    const [step, setStep] = useState(0); // Étape du diagnostic
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll vers le bas quand un message arrive
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+        if (messages.length > 1) { // Ne pas scroller au premier chargement
+            messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+        }
     }, [messages]);
 
     const handleSend = async () => {
@@ -39,46 +52,72 @@ export default function ChatAssistant() {
         setIsTyping(true);
 
         try {
-            // TODO: Activer l'appel Edge Function une fois déployée
-            // const res = await fetch(
-            //     "https://jrhwyewmeazjokgagbok.functions.supabase.co/diagnostic-agent",
-            //     {
-            //         method: "POST",
-            //         headers: {"Content-Type": "application/json"},
-            //         body: JSON.stringify({
-            //             message: sentText,
-            //             history: messages.map((m) => ({
-            //                 role: m.type === "user" ? "user" : "assistant",
-            //                 content: m.content,
-            //             })),
-            //         }),
-            //     }
-            // );
-            // const {reply} = await res.json();
+            let reply: string;
+            const newDiagnosticData = {...diagnosticData};
 
-            // Simulation locale en attendant le déploiement Edge Function
-            await new Promise(resolve => setTimeout(resolve, 800));
+            // ✅ Appel à l'IA Gemini via Supabase Edge Function
+            try {
+                const response = await fetch(
+                    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/diagnostic-agent`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({
+                            message: sentText,
+                            history: messages.map((m) => ({
+                                role: m.type === "user" ? "user" : "assistant",
+                                content: m.content,
+                            })),
+                        }),
+                    }
+                );
 
-            let reply = "Merci ! Pouvez-vous m'en dire un peu plus sur ce qui se passe exactement ?";
-
-            const lowerContent = sentText.toLowerCase();
-
-            // Logique de pré-diagnostic simple
-            if (lowerContent.includes("écran") || lowerContent.includes("ecran") || lowerContent.includes("affichage")) {
-                reply = "D'accord, problème d'écran 📱\n\nCela peut venir de la dalle ou du connecteur.\n\nL'écran est-il fissuré ou présente-t-il des taches noires ?";
-            } else if (lowerContent.includes("batterie")) {
-                reply = "Ok, problème de batterie 🔋\n\nAvez-vous remarqué une chauffe anormale ou des extinctions soudaines ?\n\nDepuis combien de temps avez-vous cet appareil ?";
-            } else if (lowerContent.includes("charge") || lowerContent.includes("recharge")) {
-                reply = "Problème de charge détecté ⚡\n\nQuelques questions :\n- Le câble de charge fonctionne-t-il avec d'autres appareils ?\n- Le port de charge est-il propre (pas de poussière) ?";
-            } else if (lowerContent.includes("son") || lowerContent.includes("audio") || lowerContent.includes("haut-parleur")) {
-                reply = "Problème de son 🔊\n\nLe son ne fonctionne-t-il pas du tout ou est-il déformé ?\n\nAvez-vous essayé avec des écouteurs ?";
-            } else if (lowerContent.includes("bouton") || lowerContent.includes("touche")) {
-                reply = "Problème de bouton 🔘\n\nQuel bouton est concerné ? (power, volume, home...)\n\nEst-il enfoncé ou ne réagit-il simplement pas ?";
-            } else if (lowerContent.includes("wifi") || lowerContent.includes("connexion") || lowerContent.includes("réseau")) {
-                reply = "Problème de connexion 📶\n\nQuelques vérifications :\n- D'autres appareils se connectent-ils au même réseau ?\n- Avez-vous essayé de redémarrer l'appareil ?";
-            } else if (messages.length <= 2) {
-                reply = "Bienvenue ! Pour bien vous aider, j'ai besoin de quelques informations :\n\n1️⃣ Quel type d'appareil ? (téléphone, tablette, ordinateur...)\n2️⃣ Quelle marque et modèle ?\n3️⃣ Quel est le problème exact ?";
+                if (response.ok) {
+                    const data = await response.json();
+                    reply = data.reply || "Je n'ai pas bien compris, pouvez-vous reformuler ?";
+                } else {
+                    // Fallback en cas d'erreur API
+                    console.warn("Erreur API IA, fallback sur logique locale");
+                    reply = await generateLocalReply(sentText, step);
+                }
+            } catch (error) {
+                console.error("Erreur appel IA:", error);
+                // Fallback sur logique locale
+                reply = await generateLocalReply(sentText, step);
             }
+
+            // Logique de progression du diagnostic et collecte des données
+            if (step === 0) {
+                // Collecte du type d'appareil
+                newDiagnosticData.appareil = sentText;
+                setStep(1);
+            } else if (step === 1) {
+                // Collecte du modèle
+                newDiagnosticData.modele = sentText;
+                setStep(2);
+            } else if (step === 2) {
+                // Collecte du symptôme
+                newDiagnosticData.symptome = sentText;
+                setStep(3);
+            } else if (step === 3) {
+                // Collecte du contexte et fin du diagnostic
+                newDiagnosticData.contexte = sentText;
+
+                // Sauvegarder les données et rediriger
+                localStorage.setItem('diagnostic_data', JSON.stringify(newDiagnosticData));
+
+                // Message de transition
+                reply = "Merci pour ces informations ! 🙏\n\nJe prépare votre estimation...";
+
+                setTimeout(() => {
+                    navigate('/estimation');
+                }, 2000);
+            }
+
+            setDiagnosticData(newDiagnosticData);
 
             const botMessage: Message = {
                 id: String(Date.now() + 1),
@@ -99,6 +138,32 @@ export default function ChatAssistant() {
             setIsTyping(false);
         }
     };
+
+    // Fonction de fallback pour réponses locales si l'IA est indisponible
+    async function generateLocalReply(text: string, currentStep: number): Promise<string> {
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        const lowerContent = text.toLowerCase();
+
+        if (currentStep === 0) {
+            return `Très bien, ${text}.\n\nQuelle est la marque et le modèle ? (ex: iPhone 12, Samsung Galaxy S21...)`;
+        } else if (currentStep === 1) {
+            return `Parfait, ${text}.\n\nQuel est le problème exact que vous rencontrez ?`;
+        } else if (currentStep === 2) {
+            // Questions de diagnostic selon le symptôme
+            if (lowerContent.includes("écran") || lowerContent.includes("ecran") || lowerContent.includes("affichage")) {
+                return "Je comprends, problème d'écran 📱\n\nDernière question : L'écran est-il fissuré ? Y a-t-il eu une chute récente ?";
+            } else if (lowerContent.includes("batterie")) {
+                return "D'accord, problème de batterie 🔋\n\nDernière question : Avez-vous remarqué une chauffe anormale ou des extinctions soudaines ? Depuis combien de temps ?";
+            } else if (lowerContent.includes("charge")) {
+                return "Problème de charge détecté ⚡\n\nDernière question : Le câble fonctionne-t-il avec d'autres appareils ? Le port est-il propre ?";
+            } else {
+                return "Je vois.\n\nDernière question : Y a-t-il eu un événement particulier avant la panne ? (chute, eau, surchauffe...)";
+            }
+        } else {
+            return "Merci pour votre réponse. Continuons...";
+        }
+    }
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
