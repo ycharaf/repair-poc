@@ -71,8 +71,8 @@ export default function QuoteInterventionPage() {
   const handleValidate = () => {
     // Sauvegarder le choix
     localStorage.setItem('selected_intervention', selectedIntervention);
-    // Naviguer vers la page de confirmation ou prise de rendez-vous
-    navigate('/confirmation?method=intervention');
+    // Naviguer vers la page de choix de lieu de dépôt des clés
+    navigate('/key-drop-location');
   };
 
   return (

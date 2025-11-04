@@ -227,6 +227,10 @@ For each new screen:
   * `github/FEATURE3_IMPLEMENTATION.md` - Documentation détaillée de l'implémentation
   * `github/FEATURE3_SUMMARY.md` - Résumé de la feature 3
 
+* **Feature 4 - Choix du lieu de dépôt des clés**
+  * `github/FEATURE4_IMPLEMENTATION.md` - Documentation détaillée de l'implémentation
+  * `github/FEATURE4_SUMMARY.md` - Résumé de la feature 4
+
 ### Layout Guidelines
 
 * **Règles de positionnement des boutons**
