@@ -1,5 +1,6 @@
 import {useState, useRef, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
 
 interface Message {
     id: string;
@@ -27,8 +28,54 @@ export default function ChatAssistant() {
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const [diagnosticData, setDiagnosticData] = useState<DiagnosticData>({});
+    const [diagnosticId, setDiagnosticId] = useState<string | null>(null);
+    const [sessionId, setSessionId] = useState<string | null>(null);
     const [step, setStep] = useState(0); // Étape du diagnostic
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    // Initialiser le diagnostic dans Supabase au montage du composant
+    useEffect(() => {
+        const initDiagnostic = async () => {
+            // Vérifier si une session existe déjà
+            let currentSessionId = localStorage.getItem('session_id');
+
+            if (!currentSessionId) {
+                currentSessionId = crypto.randomUUID();
+                localStorage.setItem('session_id', currentSessionId);
+
+                try {
+                    const { data, error } = await supabase
+                        .from('diagnostics')
+                        .insert({
+                            session_id: currentSessionId,
+                            appareil: '',
+                            symptome: '',
+                            status: 'en_cours'
+                        })
+                        .select()
+                        .single();
+
+                    if (data && !error) {
+                        setDiagnosticId(data.id);
+                        localStorage.setItem('diagnostic_id', data.id);
+                    } else {
+                        console.error('Erreur création diagnostic:', error);
+                    }
+                } catch (error) {
+                    console.error('Erreur Supabase:', error);
+                }
+            } else {
+                const storedDiagnosticId = localStorage.getItem('diagnostic_id');
+                if (storedDiagnosticId) {
+                    setDiagnosticId(storedDiagnosticId);
+                }
+            }
+
+            setSessionId(currentSessionId);
+        };
+
+        initDiagnostic();
+    }, []);
+
 
     // Auto-scroll vers le bas quand un message arrive
     useEffect(() => {
@@ -36,6 +83,41 @@ export default function ChatAssistant() {
             messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
         }
     }, [messages]);
+
+    // Fonction pour sauvegarder un message dans Supabase
+    const saveMessage = async (type: 'user' | 'bot', content: string) => {
+        if (!sessionId || !diagnosticId) return;
+
+        try {
+            await supabase
+                .from('messages_chat')
+                .insert({
+                    session_id: sessionId,
+                    diagnostic_id: diagnosticId,
+                    type,
+                    content
+                });
+        } catch (error) {
+            console.error('Erreur sauvegarde message:', error);
+        }
+    };
+
+    // Fonction pour mettre à jour le diagnostic
+    const updateDiagnostic = async (updates: Partial<DiagnosticData>) => {
+        if (!sessionId) return;
+
+        try {
+            await supabase
+                .from('diagnostics')
+                .update({
+                    ...updates,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('session_id', sessionId);
+        } catch (error) {
+            console.error('Erreur mise à jour diagnostic:', error);
+        }
+    };
 
     const handleSend = async () => {
         if (!input.trim()) return;
@@ -50,6 +132,9 @@ export default function ChatAssistant() {
         const sentText = input;
         setInput("");
         setIsTyping(true);
+
+        // Sauvegarder le message utilisateur dans Supabase
+        await saveMessage('user', sentText);
 
         try {
             let reply: string;
@@ -93,18 +178,22 @@ export default function ChatAssistant() {
             if (step === 0) {
                 // Collecte du type d'appareil
                 newDiagnosticData.appareil = sentText;
+                await updateDiagnostic({ appareil: sentText });
                 setStep(1);
             } else if (step === 1) {
                 // Collecte du modèle
                 newDiagnosticData.modele = sentText;
+                await updateDiagnostic({ modele: sentText });
                 setStep(2);
             } else if (step === 2) {
                 // Collecte du symptôme
                 newDiagnosticData.symptome = sentText;
+                await updateDiagnostic({ symptome: sentText });
                 setStep(3);
             } else if (step === 3) {
                 // Collecte du contexte et fin du diagnostic
                 newDiagnosticData.contexte = sentText;
+                await updateDiagnostic({ contexte: sentText });
 
                 // Sauvegarder les données et rediriger
                 localStorage.setItem('diagnostic_data', JSON.stringify(newDiagnosticData));
@@ -126,6 +215,9 @@ export default function ChatAssistant() {
             };
 
             setMessages((prev) => [...prev, botMessage]);
+
+            // Sauvegarder le message bot dans Supabase
+            await saveMessage('bot', reply);
         } catch (error) {
             console.error("Erreur diagnostic:", error);
             const errorMessage: Message = {

@@ -1,60 +1,118 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { MobileLayout } from '@/components/layouts/MobileLayout';
+import { supabase } from '@/lib/supabase';
 
 interface Store {
   id: string;
   name: string;
   address: string;
-  distance: string;
+  city: string;
+  postal_code: string;
+  distance?: string;
   rating: number;
-  availability: string;
+  phone?: string;
+  availability?: string;
 }
-
-const STORES: Store[] = [
-  {
-    id: '1',
-    name: 'Save République',
-    address: '12 Rue du Temple, 75003 Paris',
-    distance: '5 min',
-    rating: 4.6,
-    availability: 'aujourd\'hui',
-  },
-  {
-    id: '2',
-    name: 'Atelier Mobile Plus',
-    address: '45 Boulevard Voltaire, 75011 Paris',
-    distance: '12 min',
-    rating: 4.8,
-    availability: 'demain',
-  },
-  {
-    id: '3',
-    name: 'Repair Center Paris',
-    address: '8 Avenue de la République, 75011 Paris',
-    distance: '15 min',
-    rating: 4.5,
-    availability: 'après-demain',
-  },
-];
 
 export default function StoreSelectionPage() {
   const navigate = useNavigate();
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSelectStore = (store: Store) => {
+  // Charger les magasins depuis Supabase
+  useEffect(() => {
+    const loadStores = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('stores')
+          .select('*')
+          .eq('is_active', true)
+          .order('name');
+
+        if (data && !error) {
+          // Ajouter des informations temporaires de disponibilité et distance
+          const storesWithInfo = data.map((store, index) => ({
+            ...store,
+            distance: index === 0 ? '5 min' : index === 1 ? '12 min' : '15 min',
+            availability: index === 0 ? 'aujourd\'hui' : index === 1 ? 'demain' : 'après-demain'
+          }));
+          setStores(storesWithInfo);
+        } else {
+          console.error('Erreur chargement magasins:', error);
+        }
+      } catch (error) {
+        console.error('Erreur Supabase:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStores();
+  }, []);
+
+  const handleSelectStore = async (store: Store) => {
     setSelectedStore(store);
     // Sauvegarder le magasin sélectionné
     localStorage.setItem('selected_store', JSON.stringify(store));
+
+    // Créer le rendez-vous en statut "en_attente"
+    const diagnosticId = localStorage.getItem('diagnostic_id');
+    if (diagnosticId) {
+      try {
+        const { data, error } = await supabase
+          .from('appointments')
+          .insert({
+            diagnostic_id: diagnosticId,
+            store_id: store.id,
+            type: 'store',
+            status: 'en_attente'
+          })
+          .select()
+          .single();
+
+        if (data && !error) {
+          localStorage.setItem('appointment_id', data.id);
+        }
+      } catch (error) {
+        console.error('Erreur création rendez-vous:', error);
+      }
+    }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedStore) {
+      // Mettre à jour le statut du rendez-vous
+      const appointmentId = localStorage.getItem('appointment_id');
+      if (appointmentId) {
+        try {
+          await supabase
+            .from('appointments')
+            .update({ status: 'confirme' })
+            .eq('id', appointmentId);
+        } catch (error) {
+          console.error('Erreur confirmation rendez-vous:', error);
+        }
+      }
       navigate('/confirmation?method=store');
     }
   };
+
+  if (loading) {
+    return (
+      <MobileLayout title="Choisir un magasin">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="text-4xl mb-4 animate-pulse">⏳</div>
+            <p className="text-gray-600">Chargement des ateliers...</p>
+          </div>
+        </div>
+      </MobileLayout>
+    );
+  }
 
   return (
     <MobileLayout title="Choisir un magasin">
@@ -69,7 +127,7 @@ export default function StoreSelectionPage() {
         </div>
 
         <div className="space-y-4 flex-1 overflow-y-auto">
-          {STORES.map((store) => (
+          {stores.map((store) => (
             <Card
               key={store.id}
               className={`p-4 cursor-pointer transition-all ${
@@ -82,7 +140,9 @@ export default function StoreSelectionPage() {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">{store.name}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{store.address}</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {store.address}, {store.postal_code} {store.city}
+                  </p>
                 </div>
                 {selectedStore?.id === store.id && (
                   <div className="text-blue-600">

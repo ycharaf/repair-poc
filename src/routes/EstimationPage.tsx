@@ -1,13 +1,80 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { MobileLayout } from '@/components/layouts/MobileLayout';
+import { supabase } from '@/lib/supabase';
 
 export default function EstimationPage() {
   const navigate = useNavigate();
+  const [diagnosticData, setDiagnosticData] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
-  // Récupérer les données du diagnostic depuis localStorage ou state management
-  const diagnosticData = JSON.parse(localStorage.getItem('diagnostic_data') || '{}');
+  // Charger le diagnostic depuis Supabase
+  useEffect(() => {
+    const loadDiagnostic = async () => {
+      const sessionId = localStorage.getItem('session_id');
+
+      if (sessionId) {
+        try {
+          const { data, error } = await supabase
+            .from('diagnostics')
+            .select('*')
+            .eq('session_id', sessionId)
+            .single();
+
+          if (data && !error) {
+            setDiagnosticData(data);
+
+            // Sauvegarder l'estimation si pas déjà fait
+            if (!data.estimation_min) {
+              await supabase
+                .from('diagnostics')
+                .update({
+                  estimation_min: 39,
+                  estimation_max: 79,
+                  duree_min: 45,
+                  duree_max: 120,
+                  status: 'estime'
+                })
+                .eq('session_id', sessionId);
+            }
+          } else {
+            console.error('Erreur chargement diagnostic:', error);
+            // Fallback vers localStorage
+            const localData = JSON.parse(localStorage.getItem('diagnostic_data') || '{}');
+            setDiagnosticData(localData);
+          }
+        } catch (error) {
+          console.error('Erreur Supabase:', error);
+          // Fallback vers localStorage
+          const localData = JSON.parse(localStorage.getItem('diagnostic_data') || '{}');
+          setDiagnosticData(localData);
+        }
+      } else {
+        // Fallback vers localStorage
+        const localData = JSON.parse(localStorage.getItem('diagnostic_data') || '{}');
+        setDiagnosticData(localData);
+      }
+
+      setLoading(false);
+    };
+
+    loadDiagnostic();
+  }, []);
+
+  if (loading) {
+    return (
+      <MobileLayout title="Estimation" showBack={true}>
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="text-4xl mb-4 animate-pulse">⏳</div>
+            <p className="text-gray-600">Chargement...</p>
+          </div>
+        </div>
+      </MobileLayout>
+    );
+  }
 
   return (
     <MobileLayout title="Estimation" showBack={true}>

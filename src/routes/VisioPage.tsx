@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {MobileLayout} from '@/components/layouts/MobileLayout';
+import { supabase } from '@/lib/supabase';
 
 export default function VisioPage() {
     const navigate = useNavigate();
@@ -11,11 +12,38 @@ export default function VisioPage() {
 
     useEffect(() => {
         // Simuler la génération d'un lien Google Meet
-        setTimeout(() => {
+        const generateVisio = async () => {
             const sessionId = crypto.randomUUID().slice(0, 10);
-            setMeetLink(`https://meet.google.com/rep-${sessionId}`);
+            const link = `https://meet.google.com/rep-${sessionId}`;
+            setMeetLink(link);
             setIsGenerating(false);
-        }, 2000);
+
+            // Créer le rendez-vous visio dans Supabase
+            const diagnosticId = localStorage.getItem('diagnostic_id');
+            if (diagnosticId) {
+                try {
+                    const { data, error } = await supabase
+                        .from('appointments')
+                        .insert({
+                            diagnostic_id: diagnosticId,
+                            type: 'visio',
+                            status: 'confirme',
+                            visio_link: link,
+                            scheduled_at: new Date().toISOString()
+                        })
+                        .select()
+                        .single();
+
+                    if (data && !error) {
+                        localStorage.setItem('appointment_id', data.id);
+                    }
+                } catch (error) {
+                    console.error('Erreur création rendez-vous visio:', error);
+                }
+            }
+        };
+
+        setTimeout(generateVisio, 2000);
     }, []);
 
     const handleJoinVisio = () => {
