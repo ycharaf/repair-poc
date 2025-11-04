@@ -115,7 +115,7 @@ export default function ConfirmationPage() {
     };
 
     if (method === 'visio') {
-        const transcription = "Bonjour, j'ai un problème avec mon iPhone 12. L'écran ne s'allume plus depuis hier matin. J'ai essayé de le recharger mais rien ne se passe. Le téléphone semble s'allumer car je sens les vibrations quand je reçois des notifications, mais l'écran reste noir.";
+        const transcription = "Bonjour, donc, montrez-moi votre chauffe-eau. Je vais avoir besoin que vous me décriviez exactement ce qui ne fonctionne plus : est-ce qu’il ne chauffe plus du tout, chauffe par intermittence, ou fait un bruit inhabituel ?";
         const truncatedTranscription = transcription.split(' ').slice(0, 20).join(' ') + '...';
 
         const diagnosticOptions = [
@@ -202,10 +202,10 @@ export default function ConfirmationPage() {
                 </span>
                             </div>
                             <h4 className="font-semibold text-gray-900 mt-2 mb-1">
-                                Problème d'écran LCD
+                                Votre produit est réparable !
                             </h4>
                             <p className="text-sm text-gray-600">
-                                Écran défectueux nécessitant un remplacement. Réparation possible en 2h.
+                                Réparer ce produit c’est jusqu’à 5x moins d’émissions de CO₂ qu’un remplacement.
                             </p>
                         </div>
                     </Card>

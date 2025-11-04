@@ -36,9 +36,12 @@ export default function KeyDropLocationPage() {
   const [address, setAddress] = useState('');
 
   const handleConfirm = () => {
-    // Pour l'instant, navigation vers une page de paiement (à créer)
+    // Sauvegarder les choix
+    localStorage.setItem('selected_store', selectedStore || '');
+    localStorage.setItem('drop_address', address);
     console.log('Confirmation', { selectedTab, selectedStore, address });
-    // navigate('/payment'); // À implémenter plus tard
+    // Navigation vers la page d'accueil (à remplacer par page de paiement plus tard)
+    navigate('/');
   };
 
   return (
@@ -72,16 +75,12 @@ export default function KeyDropLocationPage() {
 
         {/* Contenu scrollable */}
         <div className="flex-1 overflow-y-auto p-4 pb-4 space-y-4">
-          {/* Carte (Image statique) */}
+          {/* Carte (Image de Lille) */}
           <div className="w-full">
             <img
-              src="/image/map_lille.jpg"
+              src="/github/image/map_lille.jpg.jpeg"
               alt="Carte de Lille"
               className="w-full h-48 object-cover rounded-lg shadow-md"
-              onError={(e) => {
-                // Fallback si l'image n'existe pas
-                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect fill="%23e5e7eb" width="400" height="200"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-family="sans-serif" font-size="16"%3ECarte de Lille%3C/text%3E%3C/svg%3E';
-              }}
             />
           </div>
 
