@@ -10,6 +10,7 @@ import StoreSelectionPage from "./routes/StoreSelectionPage";
 import ConfirmationPage from "./routes/ConfirmationPage";
 import QuoteInterventionPage from "./routes/QuoteInterventionPage";
 import KeyDropLocationPage from "./routes/KeyDropLocationPage";
+import AppointmentConfirmedPage from "./routes/AppointmentConfirmedPage";
 
 export function App() {
     return (
@@ -22,6 +23,7 @@ export function App() {
             <Route path="/appointment/store" element={<StoreSelectionPage />} />
             <Route path="/quote-intervention" element={<QuoteInterventionPage />} />
             <Route path="/key-drop-location" element={<KeyDropLocationPage />} />
+            <Route path="/appointment-confirmed" element={<AppointmentConfirmedPage />} />
             <Route path="/confirmation" element={<ConfirmationPage />} />
             <Route path="/appointments" element={<AppointmentsPage />} />
         </Routes>

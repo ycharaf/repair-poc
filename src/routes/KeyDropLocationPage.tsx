@@ -40,8 +40,8 @@ export default function KeyDropLocationPage() {
     localStorage.setItem('selected_store', selectedStore || '');
     localStorage.setItem('drop_address', address);
     console.log('Confirmation', { selectedTab, selectedStore, address });
-    // Navigation vers la page d'accueil (à remplacer par page de paiement plus tard)
-    navigate('/');
+    // Navigation vers la page de confirmation finale
+    navigate('/appointment-confirmed');
   };
 
   return (

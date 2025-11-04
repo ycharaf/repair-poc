@@ -45,8 +45,8 @@ export default function QuoteInterventionPage() {
         avatar: '👨‍🔧',
       },
       price: {
-        old: 79,
-        new: 50,
+        old: 257,
+        new: 225,
       },
     },
     {
@@ -62,8 +62,8 @@ export default function QuoteInterventionPage() {
         avatar: '👨‍🔧',
       },
       price: {
-        old: 79,
-        new: 50,
+        old: 232,
+        new: 200,
       },
     },
   ];

@@ -231,6 +231,10 @@ For each new screen:
   * `github/FEATURE4_IMPLEMENTATION.md` - Documentation détaillée de l'implémentation
   * `github/FEATURE4_SUMMARY.md` - Résumé de la feature 4
 
+* **Feature 5 - Rendez-vous validé (Confirmation finale)**
+  * `github/FEATURE5_IMPLEMENTATION.md` - Documentation détaillée de l'implémentation
+  * `github/FEATURE5_SUMMARY.md` - Résumé de la feature 5
+
 ### Layout Guidelines
 
 * **Règles de positionnement des boutons**
