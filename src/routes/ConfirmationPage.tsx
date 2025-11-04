@@ -115,7 +115,7 @@ export default function ConfirmationPage() {
     };
 
     if (method === 'visio') {
-        const transcription = "Bonjour, donc, montrez-moi votre chauffe-eau. Je vais avoir besoin que vous me décriviez exactement ce qui ne fonctionne plus : est-ce qu’il ne chauffe plus du tout, chauffe par intermittence, ou fait un bruit inhabituel ?";
+        const transcription = "Bonjour, donc, montrez-moi votre appareil. Je vais avoir besoin que vous me décriviez exactement ce qui ne fonctionne plus : est-ce qu’il ne chauffe plus du tout, chauffe par intermittence, ou fait un bruit inhabituel ?";
         const truncatedTranscription = transcription.split(' ').slice(0, 20).join(' ') + '...';
 
         const diagnosticOptions = [

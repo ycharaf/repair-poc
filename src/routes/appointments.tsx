@@ -35,15 +35,36 @@ export default function AppointmentsPage() {
         const { data, error } = await supabase
           .from('appointments')
           .select(`
-            *,
-            diagnostic:diagnostics(*),
-            store:stores(*)
+            id,
+            type,
+            status,
+            visio_link,
+            scheduled_at,
+            created_at,
+            diagnostic:diagnostics(appareil, modele, symptome),
+            store:stores(name, address, city, postal_code)
           `)
           .order('created_at', { ascending: false })
           .limit(10);
 
         if (data && !error) {
-          setAppointments(data);
+          // Transformer les données pour extraire le premier élément des jointures
+          const transformedAppointments = data.map((appointment: any) => ({
+            ...appointment,
+            diagnostic: Array.isArray(appointment.diagnostic)
+              ? appointment.diagnostic[0]
+              : appointment.diagnostic,
+            store: Array.isArray(appointment.store)
+              ? appointment.store[0]
+              : appointment.store,
+          }));
+
+          // Filtrer les duplicatas par id (au cas où)
+          const uniqueAppointments = transformedAppointments.filter((appointment, index, self) =>
+            index === self.findIndex((a) => a.id === appointment.id)
+          );
+
+          setAppointments(uniqueAppointments);
         } else {
           console.error('Erreur chargement rendez-vous:', error);
         }
